@@ -3,11 +3,13 @@ import time
 import random
 
 
-mutex = {threading.Semaphore(1), threading.Semaphore(1), threading.Semaphore(1), threading.Semaphore(1)}
+mutex = [threading.Semaphore(1), threading.Semaphore(1), threading.Semaphore(1), threading.Semaphore(1)]
 
 mutex_intersection = threading.Semaphore(3)
 
-check = {1, 1, 1, 1}
+mutex_print = threading.Semaphore(1)
+
+check = [1, 1, 1, 1]
 
 def enter_square(square):
     mutex[square].acquire()
@@ -20,13 +22,15 @@ def leave_square(square):
     check[square] = 1
 
 def view_intersection():
-print("Viewing intersection")
-print("    |  |  |\n")
-print("  __|  |  |__\n")
-print("  __ {} {} __\n".format(1 - check[0], 1 - check[1]))
-print("  __ {} {} __\n".format(1 - check[3], 1 - check[2]))
-print("    |  |  |\n")
-print("    |  |  |\n")
+    mutex_intersection.acquire()
+    print("Viewing intersection")
+    print("    | | |")
+    print("  __| | |__")
+    print("  __ {} {} __".format(1 - check[0], 1 - check[1]))
+    print("  __ {} {} __".format(1 - check[3], 1 - check[2]))
+    print("    | | |")
+    print("    | | |")
+    mutex_intersection.release()
 
 
 
@@ -75,4 +79,6 @@ def main():
 
     for t in threads:
         t.join()
+
+main()
     
