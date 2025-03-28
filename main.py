@@ -12,8 +12,8 @@ mutex_print = threading.Semaphore(1)
 check = [1, 1, 1, 1]
 
 def enter_square(square):
-    mutex[square].acquire()
     mutex_intersection.acquire()
+    mutex[square].acquire()
     check[square] = 0
 
 def leave_square(square):
@@ -66,14 +66,25 @@ def intersection(road, turn):
     mutex_intersection.release()
     threads = []
     for i in range(4):
-        t = threading.Thread(target=intersection, args=(i, random.randint(0, 2)))
+        car = random.randint(0,3)
+        turning = random.randint(0,2)
+        print("{} {}".format(car, turning))
+        t = threading.Thread(target=intersection, args=(car, turning))
         threads.append(t)
         t.start()
 
 def main():
     threads = []
-    for i in range(4):
-        t = threading.Thread(target=intersection, args=(i, random.randint(0, 2)))
+    cars = []
+    n=5
+    for i in range(n):
+        cars.append([random.randint(0,3),random.randint(0,2)])
+        
+    for i in range(n):
+        print(cars[i])
+
+    for i in range(n):
+        t = threading.Thread(target=intersection, args=(cars[i][0],cars[i][1]))
         threads.append(t)
         t.start()
 
